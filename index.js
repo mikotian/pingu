@@ -33,7 +33,7 @@ httpsServer.listen(config.httpsPort,function(){
 var handlers = {};
 
 //sample handler
-handlers.sample=function(data,callback) {
+handlers.meta=function(data,callback) {
     //callback http status code and payload as object
     console.log("Query::"+JSON.stringify(data.query)+"\nHeaders:"+JSON.stringify(data.headers)+"\n")
     console.log("Payload::\n"+data.payload);
@@ -46,6 +46,11 @@ handlers.ping=function(data,callback) {
     callback(200,{'state':'alive'});
 };
 
+handlers.hello=function(data,callback) {
+    data={'code':200,'message':'Greetings from the server at '+Date.now().toString()};
+    callback(200,data);
+};
+
 //not found handler
 handlers.notfound=function (data,callback) {
     callback(404,{'message':'not found'});
@@ -53,8 +58,9 @@ handlers.notfound=function (data,callback) {
 
 //route handler
 var router = {
-    'sample':handlers.sample,
-    'ping':handlers.ping
+    'meta':handlers.meta,
+    'ping':handlers.ping,
+    'hello':handlers.hello
 };
 
 function unifiedServer(req, res) {
