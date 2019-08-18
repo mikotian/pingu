@@ -5,8 +5,6 @@ var fs=require('fs');
 var StringDecoder=require('string_decoder').StringDecoder;
 var config=require('./config');
 
-console.log("Hello World!!");
-
 var httpServer=http.createServer(function(req,res){
     unifiedServer(req, res);   
 });
@@ -32,7 +30,7 @@ httpsServer.listen(config.httpsPort,function(){
 //define handlers
 var handlers = {};
 
-//sample handler
+//meta handler
 handlers.meta=function(data,callback) {
     //callback http status code and payload as object
     console.log("Query::"+JSON.stringify(data.query)+"\nHeaders:"+JSON.stringify(data.headers)+"\n")
@@ -40,12 +38,13 @@ handlers.meta=function(data,callback) {
     callback(200,data);
 };
 
-//return 200
+//returns 200
 handlers.ping=function(data,callback) {
     //callback http status code and payload as object
     callback(200,{'state':'alive'});
 };
 
+//Hello API
 handlers.hello=function(data,callback) {
     data={'code':200,'message':'Greetings from the server at '+Date.now().toString()};
     callback(200,data);
@@ -64,12 +63,23 @@ var router = {
 };
 
 function unifiedServer(req, res) {
+    //URL Object
     var parsedUrl = url.parse(req.url, true);
+    
+    //Path Details
     var path = parsedUrl.pathname;
     var trimmedPath = path.replace(/^\/+|\/+$/g, '');
+    
+    //Method of Request
     var method = req.method;
+    
+    //Parameters with request
     var queryString = parsedUrl.query;
+    
+    //Request Headers
     var headers = req.headers;
+    
+    //Request Payload/Body
     var decoder = new StringDecoder('utf-8');
     var buffer = '';
     
